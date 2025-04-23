@@ -158,7 +158,8 @@ impl CredentialApi for KeyutilsCredential {
 
         // Directly link to the persistent keyring as well
         if let Some(keyring) = self.persistent {
-            keyring.link_key(key).map_err(decode_error)?;
+            keyring.link_key(key)
+                .map_err(decode_error)?;
         }
         Ok(())
     }
@@ -186,17 +187,20 @@ impl CredentialApi for KeyutilsCredential {
         // Directly re-link to the session keyring
         // If a logout occurred, it will only be linked to the
         // persistent keyring, and needs to be added again.
-        self.session.link_key(key).map_err(decode_error)?;
+        self.session.link_key(key)
+            .map_err(decode_error)?;
 
         // Directly re-link to the persistent keyring
         // If it expired, it will only be linked to the
         // session keyring, and needs to be added again.
         if let Some(keyring) = self.persistent {
-            keyring.link_key(key).map_err(decode_error)?;
+            keyring.link_key(key)
+                .map_err(decode_error)?;
         }
 
         // Read in the key (making sure we have enough room)
-        let buffer = key.read_to_vec().map_err(decode_error)?;
+        let buffer = key.read_to_vec()
+            .map_err(decode_error)?;
         Ok(buffer)
     }
 
@@ -219,7 +223,8 @@ impl CredentialApi for KeyutilsCredential {
             .map_err(decode_error)?;
 
         // Invalidate the key immediately
-        key.invalidate().map_err(decode_error)?;
+        key.invalidate()
+            .map_err(decode_error)?;
         Ok(())
     }
 
@@ -256,7 +261,8 @@ impl KeyutilsCredential {
     pub fn new_with_target(target: Option<&str>, service: &str, user: &str) -> Result<Self> {
         // Obtain the session keyring
         let session =
-            KeyRing::from_special_id(KeyRingIdentifier::Session, false).map_err(decode_error)?;
+            KeyRing::from_special_id(KeyRingIdentifier::Session, false)
+                .map_err(decode_error)?;
 
         // Link the persistent keyring to the session
         let persistent = KeyRing::get_persistent(KeyRingIdentifier::Session).ok();
